@@ -77,10 +77,10 @@ class CrudController extends Controller
     public function actionCreate()
     {
         $model = new User();
-        
+
         if ($this->request->isPost) {
 
-            if ($model->load($this->request->post())){
+            if ($model->load($this->request->post())) {
                 $model->save();
 
                 return $this->redirect(['view', 'id' => $model->id]);
@@ -94,6 +94,16 @@ class CrudController extends Controller
         ]);
     }
 
+
+    public function beforeAction($action)
+    {
+        if (in_array($action->id, ['update', 'delete'])) {
+            $this->enableCsrfValidation = false;
+        }
+
+        return parent::beforeAction($action);
+    }
+
     /**
      * Updates an existing User model.
      * If update is successful, the browser will be redirected to the 'view' page.
@@ -103,20 +113,19 @@ class CrudController extends Controller
      */
     public function actionUpdate($id)
     {
+        \Yii::$app->controller->enableCsrfValidation = false;
+
         $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+        if ($this->request->isPost && $model->load($this->request->post())) {
 
-
-            if($model = Object::find()->where(['id' => $id])
-                ->with(['objectFacilities'])
-                ->one()){
-                foreach($model->objectFacilities as $facility) array_push($model->oFacilities, $facility->id);
-
-                return $this->render('update', ['model' => $model]);
+            if ($model->validate()) {
+                $model->save();
+            } else {
+                echo "<pre>";
+                print_r($model->errors);
+                die();
             }
-
-
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -128,9 +137,6 @@ class CrudController extends Controller
     /**
      * Deletes an existing User model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param int $id ID
-     * @return mixed
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id)
     {

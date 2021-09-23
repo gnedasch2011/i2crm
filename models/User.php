@@ -13,6 +13,27 @@ use yii\helpers\ArrayHelper;
  */
 class User extends \yii\db\ActiveRecord
 {
+
+    public static function involvementInThisDepartment($allUsers, $depId)
+    {
+        $res = true;
+
+        foreach ($allUsers as $user) {
+            $departsLink = $user->getUserDepartmetns()->all();
+            $departsLink = ArrayHelper::getColumn($departsLink, 'id');
+
+            if (is_array($departsLink) && count($departsLink) == 1) {
+                if (isset($departsLink[0]) && $departsLink[0] == $depId) {
+                    $res = $user;
+                }
+                break;
+            }
+        }
+
+        return $res;
+    }
+
+
     public $userDepartmetns;
 
     public function events()
@@ -20,15 +41,35 @@ class User extends \yii\db\ActiveRecord
         return [
             ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
             ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
+            ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
         ];
     }
 
+    public function beforeDelete()
+    {
+        echo "<pre>";
+        print_r($this);
+        die();
+    }
+
+
     public function afterSave($insert, $changedAttributes)
     {
-        foreach ($this->userDepartmetns as $departmetnId) {
-            $department = Department::findOne($departmetnId);
-            $this->link('userDepartmetns', $department);
+        UserDepartment::deleteAll(['id_user' => $this->id]);
+
+        if ($this->userDepartmetns) {
+            foreach ($this->userDepartmetns as $departmetnId) {
+                $userDepartment = new UserDepartment();
+                $userDepartment->id_departmen = $departmetnId;
+                $userDepartment->id_user = $this->id;
+
+                if ($userDepartment->validate()) {
+                    $userDepartment->save();
+                }
+
+            }
         }
+
 
         return true;
     }
@@ -47,10 +88,12 @@ class User extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            ['userDepartmetns', 'required', 'message' => 'Сотрудник должен быть прикреплён'],
             [['name'], 'string', 'max' => 45],
-            [['userDepartmetns'], 'safe'],
+            [['name'], 'required', 'message' => 'Поле не может пустое'],
         ];
     }
+
 
     /**
      * {@inheritdoc}
@@ -59,7 +102,8 @@ class User extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Имя',
+            'userDepartmetns' => 'Отделы',
         ];
     }
 
@@ -70,21 +114,18 @@ class User extends \yii\db\ActiveRecord
 
     public function getForSelectDepartment()
     {
-
-        //тут выбрать
         $departments = Department::find()->all();
-
         $res = ArrayHelper::map($departments, 'id', 'name');
 
         return $res;
     }
 
-    public static function checkedDepartment($userId, $value)
+    public static function checkedDepartment($userId, $departmentId)
     {
-      $checked =   UserDepartment::find()->where(['and',
+        $checked = UserDepartment::find()->where(['and',
             [
                 'id_user' => $userId,
-                'id_departmen' => $value
+                'id_departmen' => $departmentId
             ]
 
         ])->exists();

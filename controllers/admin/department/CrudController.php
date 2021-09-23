@@ -111,6 +111,15 @@ class CrudController extends Controller
         ]);
     }
 
+    public function beforeAction($action)
+    {
+        if (in_array($action->id, ['update', 'delete'])) {
+            $this->enableCsrfValidation = false;
+        }
+
+        return parent::beforeAction($action);
+    }
+    
     /**
      * Deletes an existing Department model.
      * If deletion is successful, the browser will be redirected to the 'index' page.

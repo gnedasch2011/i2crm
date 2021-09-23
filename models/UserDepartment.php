@@ -28,6 +28,7 @@ class UserDepartment extends \yii\db\ActiveRecord
         return [
             [['id_user', 'id_departmen'], 'required'],
             [['id_user', 'id_departmen'], 'integer'],
+            ['id_user', 'unique', 'targetAttribute' => ['id_user', 'id_departmen']]
         ];
     }
 

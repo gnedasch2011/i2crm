@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "department".
@@ -12,6 +13,35 @@ use Yii;
  */
 class Department extends \yii\db\ActiveRecord
 {
+
+    public function events()
+    {
+        return [
+            ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
+        ];
+    }
+
+    public function beforeDelete()
+    {
+
+        $res = $this->deleteAllUsers();
+
+        if (is_bool($res)) {
+            return parent::beforeDelete();
+        } else {
+            return false;
+        }
+    }
+
+    public function deleteAllUsers()
+    {
+        $allUsers = $this->hasMany(User::className(), ['id' => 'id_user'])->viaTable('user_department', ['id_departmen' => 'id'])->all();
+
+        $check = User::involvementInThisDepartment($allUsers, $this->id);
+
+        return $check;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -27,6 +57,7 @@ class Department extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 45],
+            [['name'], 'required'],
         ];
     }
 
@@ -41,8 +72,4 @@ class Department extends \yii\db\ActiveRecord
         ];
     }
 
-    public static function checkedLinkWithUser($value)
-    {
-
-    }
 }
