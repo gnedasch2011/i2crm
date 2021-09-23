@@ -106,6 +106,17 @@ class CrudController extends Controller
         $model = $this->findModel($id);
 
         if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
+
+
+            if($model = Object::find()->where(['id' => $id])
+                ->with(['objectFacilities'])
+                ->one()){
+                foreach($model->objectFacilities as $facility) array_push($model->oFacilities, $facility->id);
+
+                return $this->render('update', ['model' => $model]);
+            }
+
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

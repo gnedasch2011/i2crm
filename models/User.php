@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "user".
@@ -65,5 +66,29 @@ class User extends \yii\db\ActiveRecord
     public function getUserDepartmetns()
     {
         return $this->hasMany(Department::className(), ['id' => 'id_departmen'])->viaTable('user_department', ['id_user' => 'id']);
+    }
+
+    public function getForSelectDepartment()
+    {
+
+        //тут выбрать
+        $departments = Department::find()->all();
+
+        $res = ArrayHelper::map($departments, 'id', 'name');
+
+        return $res;
+    }
+
+    public static function checkedDepartment($userId, $value)
+    {
+      $checked =   UserDepartment::find()->where(['and',
+            [
+                'id_user' => $userId,
+                'id_departmen' => $value
+            ]
+
+        ])->exists();
+
+        return $checked;
     }
 }

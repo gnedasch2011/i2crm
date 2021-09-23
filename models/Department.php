@@ -40,4 +40,9 @@ class Department extends \yii\db\ActiveRecord
             'name' => 'Name',
         ];
     }
+
+    public static function checkedLinkWithUser($value)
+    {
+
+    }
 }

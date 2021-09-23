@@ -13,10 +13,18 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
-    <?= $form->field($model, 'userDepartmetns')->checkboxList([
-            '1'=>1,
-            '2'=>2,
-        ]) ?>
+    <?= $form->field($model, 'userDepartmetns')->checkboxList(
+        $model->forSelectDepartment
+        , [
+            'item' => function ($index, $label, $name, $checked, $value) {
+
+                $checkedVal = \app\models\User::checkedDepartment($_GET['id'], $value);
+                $checked = ($checkedVal) ? 'checked' : '';
+
+                return "<label class='checkbox col-md-4' style='font-weight: normal;'><input type='checkbox' {$checked} name='{$name}' value='{$value}'>{$label}</label>";
+            }
+        ]
+    ) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
