@@ -4,6 +4,7 @@ namespace app\models;
 
 use Yii;
 use yii\db\ActiveRecord;
+use yii\helpers\ArrayHelper;
 
 /**
  * This is the model class for table "department".
@@ -70,6 +71,14 @@ class Department extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
         ];
+    }
+
+    public static function getForSelectDepartment()
+    {
+        $departments = self::find()->all();
+        $res = ArrayHelper::map($departments, 'id', 'name');
+
+        return $res;
     }
 
 }

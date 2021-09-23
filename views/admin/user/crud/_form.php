@@ -14,7 +14,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
     <?= $form->field($model, 'userDepartmetns')->checkboxList(
-        $model->forSelectDepartment
+        \app\models\Department::getForSelectDepartment()
         , [
             'item' => function ($index, $label, $name, $checked, $value) {
 
