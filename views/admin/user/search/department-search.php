@@ -7,7 +7,7 @@ $form = ActiveForm::begin([
     'id' => 'login-form',
     'options' => ['class' => 'form-horizontal'],
 ]) ?>
-<?= $form->field($searchModel, 'name')->checkboxList(\app\models\Department::getForSelectDepartment()) ?>
+<?= $form->field($searchModel, 'name')->checkboxList(\app\models\User::getAllUser()) ?>
 
     <div class="form-group">
         <div class="col-lg-offset-1 col-lg-11">
@@ -17,10 +17,10 @@ $form = ActiveForm::begin([
 <?php ActiveForm::end() ?>
 
 <?php if ($dataProvider): ?>
-    <?php foreach ($dataProvider as $department): ?>
-        Отдел: <?= $department->name; ?>
+    <?php foreach ($dataProvider as $user): ?>
+        Сотрудник: <?= $user->name; ?> состоит в отделах
         <ul>
-            <?php foreach ($department->userDepartment as $user): ?>
+            <?php foreach ($user->userDepartment as $user): ?>
                 <li><?= $user->name; ?>    </li>
             <?php endforeach; ?>
         </ul>

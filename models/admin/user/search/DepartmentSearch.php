@@ -1,10 +1,11 @@
 <?php
-namespace app\models\admin\department\search;
+namespace app\models\admin\user\search;
 
 use app\models\Department;
+use app\models\User;
 use yii\data\ActiveDataProvider;
 
-class UserSearch extends \yii\base\Model
+class DepartmentSearch extends \yii\base\Model
 {
     public $name;
 
@@ -26,11 +27,10 @@ class UserSearch extends \yii\base\Model
     public function search($params)
     {
 
-        $query = Department::find();
+        $query = User::find();
 
         $this->load($params);
-  
-        $query->where(['department.id'=>$this->name]);
+        $query->where(['user.id'=>$this->name]);
         $query->joinWith('userDepartment');
 
         return $query->all();

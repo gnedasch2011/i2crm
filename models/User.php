@@ -132,4 +132,17 @@ class User extends \yii\db\ActiveRecord
 
         return $checked;
     }
+
+    public static function getAllUser()
+    {
+        $users = self::find()->all();
+        $users = ArrayHelper::map($users, 'id', 'name');
+
+        return $users ?? [];
+    }
+
+    public function getUserDepartment()
+    {
+        return $this->hasMany(Department::className(), ['id' => 'id_departmen'])->viaTable('user_department', ['id_user' => 'id']);
+    }
 }

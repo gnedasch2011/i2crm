@@ -39,8 +39,8 @@ AppAsset::register($this);
         'items' => [
             ['label' => 'Добавить сотрудника', 'url' => ['/admin/user/crud']],
             ['label' => 'Добавить отдел', 'url' => ['/admin/department/crud']],
-            ['label' => 'Поиск по отделу', 'url' => ['/admin/department/search']],
-            ['label' => 'Поиск по сотруднику', 'url' => ['/admin/user/search']]
+            ['label' => 'Поиск по отделу', 'url' => ['/admin/department/search/find-user']],
+            ['label' => 'Поиск по сотруднику', 'url' => ['/admin/user/search/find-department']]
         ],
     ]);
     NavBar::end();

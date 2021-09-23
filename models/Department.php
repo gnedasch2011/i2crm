@@ -81,4 +81,9 @@ class Department extends \yii\db\ActiveRecord
         return $res;
     }
 
+    public function getUserDepartment()
+    {
+        return $this->hasMany(User::className(), ['id' => 'id_user'])->viaTable('user_department', ['id_departmen' => 'id']);
+    }
+
 }
