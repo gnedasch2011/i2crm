@@ -27,7 +27,7 @@ class Department extends \yii\db\ActiveRecord
 
         $res = $this->deleteAllUsers();
 
-        if (is_bool($res)) {
+        if ($res) {
             return parent::beforeDelete();
         } else {
             return false;
@@ -39,6 +39,15 @@ class Department extends \yii\db\ActiveRecord
         $allUsers = $this->hasMany(User::className(), ['id' => 'id_user'])->viaTable('user_department', ['id_departmen' => 'id'])->all();
 
         $check = User::involvementInThisDepartment($allUsers, $this->id);
+
+        if ($check) {
+            $allUsersArray = ArrayHelper::getColumn($allUsers, 'id');
+
+            if (is_bool($check)) {
+                UserDepartment::deleteAll(['id_departmen' => $this->id, 'id_user' => $allUsersArray]);
+                return true;
+            }
+        }
 
         return $check;
     }

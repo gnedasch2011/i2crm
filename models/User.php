@@ -13,7 +13,12 @@ use yii\helpers\ArrayHelper;
  */
 class User extends \yii\db\ActiveRecord
 {
-
+    /**
+     *
+     * @param $allUsers
+     * @param $depId
+     * @return bool
+     */
     public static function involvementInThisDepartment($allUsers, $depId)
     {
         $res = true;
@@ -24,7 +29,7 @@ class User extends \yii\db\ActiveRecord
 
             if (is_array($departsLink) && count($departsLink) == 1) {
                 if (isset($departsLink[0]) && $departsLink[0] == $depId) {
-                    $res = $user;
+                    $res = false;
                 }
                 break;
             }
