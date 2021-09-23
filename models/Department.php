@@ -82,6 +82,9 @@ class Department extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @return array
+     */
     public static function getForSelectDepartment()
     {
         $departments = self::find()->all();

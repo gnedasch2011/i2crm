@@ -14,7 +14,7 @@ use yii\helpers\ArrayHelper;
 class User extends \yii\db\ActiveRecord
 {
     /**
-     *
+     * Метод проверки на валидацию, когда сотрудник прикреплён только к одному отделу
      * @param $allUsers
      * @param $depId
      * @return bool
@@ -46,15 +46,7 @@ class User extends \yii\db\ActiveRecord
         return [
             ActiveRecord::EVENT_AFTER_INSERT => 'afterSave',
             ActiveRecord::EVENT_AFTER_UPDATE => 'afterSave',
-            ActiveRecord::EVENT_BEFORE_DELETE => 'beforeDelete',
         ];
-    }
-
-    public function beforeDelete()
-    {
-        echo "<pre>";
-        print_r($this);
-        die();
     }
 
 
